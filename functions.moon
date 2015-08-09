@@ -5,6 +5,25 @@ handle = (index, client, message) ->
     if message\find '<0>'
         client\send '<0 '..client.id..">'e' n="..server.version..'</0>'
 
+    -- Login
+    elseif message\find '<login'
+        user, pass = message\match '<login (.*)>(.*)</login>'
+        if database\user_exists user
+            if database\valid_user user, pass
+                client.name = user
+                client\send '<login>allow</login>'
+            else client\send '<login>wp</login>'
+        else
+            client\send '<login>wu</login>'
+
+    -- Registro
+    elseif message\find '<reges'
+        user, pass = message\match '<reges (.*)>(.*)</reges>'
+        if database\user_exists user then client\send '<reges>ue</reges>'
+        else
+            database\add_user user, pass, 'std'
+            client\send '<reges>success</reges>'
+
     -- ID
     elseif message\find '<1>'
         client\send '<1>'..client.id..'</1>'

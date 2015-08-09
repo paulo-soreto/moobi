@@ -21,17 +21,8 @@ class Server
         @socket\settimeout 0
         @socket\setoption 'tcp-nodelay', true
         logger\write 'Servidor iniciando em ['..@ip..':'..@port..']'
-        self\load_database!
+        database\load_users!
         self\loop!
-
-    load_database: =>
-        logger\write 'Carregando banco de dados...'
-        db_file = io.open './Data/users', 'r'
-        data = db_file\read'*a'
-        db_file\close!
-        @database = {}
-        for user, pass, group in data\gmatch '(%w+):(%w+):(%w+);' do insert @database, User user, pass, group
-        logger\write #@database..' usuarios carregados!'
 
     loop: =>
         while true
